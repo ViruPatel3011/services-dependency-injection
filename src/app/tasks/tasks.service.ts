@@ -1,13 +1,16 @@
-import { Injectable, signal } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { Task, TaskStatus } from "./task.model";
+import { LoggingService } from "../logging.service";
 
 // Better way as compared to provider approach(main.ts)
 // Operate with same instance on duplicate component 
-@Injectable({
-    providedIn: 'root'
-})
+// @Injectable({
+//     providedIn: 'root'
+// })
 export class TasksService {
     private tasks = signal<Task[]>([]);
+    private loggingService = inject(LoggingService);
+
 
     allTasks = this.tasks.asReadonly();
 
@@ -18,11 +21,14 @@ export class TasksService {
             status: 'OPEN'
         }
         this.tasks.update((oldTasks) => [...oldTasks, newTask])
+        this.loggingService.log('ADDED TASK with title' + taskData.title)
 
     }
 
-    updateTaskStatus(taskId: string, taskStatus: TaskStatus) {
+    updateTaskStatus(taskId: string, newStatus: TaskStatus) {
         this.tasks.update((oldTasks) =>
-            oldTasks.map((task) => task.id === taskId ? { ...task, status: taskStatus } : task))
+            oldTasks.map((task) => task.id === taskId ? { ...task, status: newStatus } : task))
+        this.loggingService.log('CHANGED TASK STATUS' + newStatus)
+
     }
 }

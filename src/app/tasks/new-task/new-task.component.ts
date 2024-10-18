@@ -1,5 +1,6 @@
-import { Component, ElementRef, viewChild } from '@angular/core';
+import { Component, ElementRef, Inject, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TaskServiceToken } from "../../../main"
 import { TasksService } from '../tasks.service';
 
 @Component({
@@ -13,8 +14,11 @@ export class NewTaskComponent {
   private formEl = viewChild<ElementRef<HTMLFormElement>>('form');
   // private taskService: TasksService; --> alternate is private taskService in constructor parameters 
 
-  // Its angular's jobto provide this parameter values in constructor 
-  constructor(private tasksService: TasksService) {
+  // Its angular's jobto provide this parameter values in constructor
+  
+  // In case of constructor injection is slitly different from inject function
+  constructor(@Inject(TaskServiceToken) private tasksService: TasksService
+  ) {
     // this.taskService = tService;
   }
 
